@@ -9,3 +9,4 @@ transparent-background
 pillow
 onnxruntime-gpu
 Pillow==9.5.0
+pyaml
