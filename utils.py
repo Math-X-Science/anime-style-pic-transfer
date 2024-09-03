@@ -217,3 +217,9 @@ def enable_grad(nets: list[nn.Module]) -> None:
     call set_requires_grad(nets:list[nn.Module],requires_grad=True)
     """
     set_requires_grad(nets, True)
+
+def load_path_yamls():
+    with open("path.yaml", "r", encoding="utf-8") as f:
+        path = yaml.load(f.read(), yaml.FullLoader)
+    return path
+

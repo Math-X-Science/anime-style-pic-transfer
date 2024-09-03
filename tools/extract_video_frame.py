@@ -8,12 +8,14 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir)
 import torch
 import shutil
+from utils import load_path_yamls
 
 from tools.common_config import *
 
 
 if __name__ == '__main__':
-    ffmpeg_path = os.path.join('.', 'ffmpeg-master-latest-win64-gpl-shared', 'bin', 'ffmpeg.exe')
+    paths = load_path_yamls()
+    ffmpeg_path = paths["ffmpeg_path"]
     if len(sys.argv) < 2:
         print("Params: <runtime-config.json>")
         exit(ERROR_PARAM_COUNT)
