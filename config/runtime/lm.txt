@@ -1,0 +1,38 @@
+{
+    "workspace": "D:\\program\\UGATIT-pytorch-app\\workspace",
+    "video": {
+        "input": "video.mp4",
+        "output": "output.mp4",
+        "audio": true,
+        "fps": 25
+    },
+    "tag": {
+        "enable": true,
+        "mode": ""
+    },
+    "setting": {
+        "type": "img2img",
+        "resize": {
+            "scale": 1.0
+        },
+        "crop": 2,
+        "webui_api_url": "",
+        "seed": -1,
+        "inpaint": false,
+        "mask_mode": "transparent-background",
+        "mask_bg_mode": "#ffffff",
+        "overlay": true
+    },
+    "webui": {
+        "prompt": "black eyes,Japanese high school students, Makoto Shinkai movie style, youthful innocence, beauty",
+        "negative_prompt": "wrong hand,ugly",
+        "denoising_strength": 0.70,
+        "cfg_scale": 7,
+        "sampler_name": "Euler a",
+        "steps": 20
+    },
+    "config": {
+        "setting": "img_base.txt",
+        "webui": "lineart_tile.txt"
+    }
+}
