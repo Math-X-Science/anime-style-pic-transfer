@@ -1,5 +1,5 @@
 {
-    "workspace": "D:\\program\\UGATIT-pytorch-app\\workspace",
+    "workspace": "D:\\program\\anime-style-pic-transfer-master\\workspace",
     "video": {
         "input": "video.mp4",
         "output": "output.mp4",
