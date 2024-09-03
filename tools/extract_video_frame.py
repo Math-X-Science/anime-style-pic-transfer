@@ -15,7 +15,8 @@ from tools.common_config import *
 
 if __name__ == '__main__':
     paths = load_path_yamls()
-    ffmpeg_path = paths["ffmpeg_path"]
+    ffmpeg_path = paths["ffmpeg"]
+    fps = paths["fps"]
     if len(sys.argv) < 2:
         print("Params: <runtime-config.json>")
         exit(ERROR_PARAM_COUNT)
@@ -50,7 +51,7 @@ if __name__ == '__main__':
     os.makedirs(workspace.input)
 
     # 定义帧率（这里设置为每秒截取15帧）
-    fps = video_config.get_fps()
+    fps = fps
 
     # 设置Torch不使用图形界面显示
     os.environ["PYTORCH_JIT"] = "1"
@@ -61,11 +62,11 @@ if __name__ == '__main__':
     # 使用 ffmpeg 命令行工具截取视频帧，并将其保存为图片
     subprocess.call([
         ffmpeg_path, "-i", video_file,
-        "-vf", "fps=" + str(8),
+        "-vf", "fps=" + str(fps),
         os.path.join(workspace.input, "%05d.png")
     ])
 
-    print("\n\n视频转帧步骤已完成！帧率为： " + str(8))
+    print("\n\n视频转帧步骤已完成！帧率为： " + str(fps))
 
     if it_mode is None:
         it_mode = setting_config.get_interactive_mode()

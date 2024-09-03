@@ -1,13 +1,11 @@
 import os
 import sys
-from utils import load_path_yamls
+
 
 # 获取当前脚本所在的目录的上级目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-paths = load_path_yamls()
-ffmpeg_path = paths["ffmpeg_path"]
-ffprobe_path = paths["ffprobe_path"]
+
 # 将上级目录添加到模块搜索路径中
 sys.path.insert(0, parent_dir)
 import shutil
@@ -17,7 +15,11 @@ from PIL import Image
 import subprocess
 
 from tools.common_config import *
-
+from utils import load_path_yamls
+paths = load_path_yamls()
+ffmpeg_path = paths["ffmpeg"]
+ffprobe_path = paths["ffprobe"]
+fps = paths["fps"]
 
 # 定义偶数尺寸函数
 def even_size(img_size):
@@ -76,7 +78,7 @@ if __name__ == '__main__':
     video_config = setting_config.get_video()
     input_file = os.path.join(workspace.root, video_config.get_input())
     output_file = os.path.join(workspace.root, video_config.get_output())
-    fps = video_config.get_fps()
+    fps = fps
 
     if video_config.enable_audio():
         output_path = Path(output_file)
@@ -94,7 +96,7 @@ if __name__ == '__main__':
 
     # 输出最终视频文件
     bit_rate = int(get_bit_rate(input_file))*4
-    convert_images_to_video(workspace.output+"/imgs", silent_file, 8,bit_rate=str(bit_rate))
+    convert_images_to_video(workspace.output+"/imgs/", silent_file, fps,bit_rate=str(bit_rate))
 
     if video_config.enable_audio():
         # 删除缓存
