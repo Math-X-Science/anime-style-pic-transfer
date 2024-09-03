@@ -1,3 +1,4 @@
 ffmpeg: "./ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"
 ffprobe: "./ffmpeg-master-latest-win64-gpl-shared/bin/ffprobe.exe"
 
+fps: 60
