@@ -16,6 +16,11 @@
 pip install -r requirements.txt
 ```
 
+## 需要修改的地方:
+
+* ffmpeg的路径。
+* config/runtime/lm.txt中workspace的位置，绝对路径改到项目根目录
+
 ## 运行：
 
 ```cmd
