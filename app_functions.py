@@ -152,8 +152,11 @@ def save_image(image, resolution):
     return f"Image saved as {save_file}"
 
 
-def save_video(video):
-
+from moviepy.editor import VideoFileClip
+def save_video(video, target_resolution='720p'):
+    """保存原视频为origin.mp4，并重采样为目标分辨率的视频video.mp4"""
+    
+    # 确定保存路径
     path = Path(os.path.realpath(__file__)).parent
     config_root_dir = path / "config"
     setting_json = config_root_dir / "runtime" / "lm.txt"
@@ -162,26 +165,39 @@ def save_video(video):
 
     # workspace path config
     workspace = setting_config.get_workspace_config()
-    save_path = str(path / "workspace" )
+    save_path = str(path / "workspace")
 
     if os.path.exists(save_path):
-         shutil.rmtree(save_path)
-         os.makedirs(save_path)
+        shutil.rmtree(save_path)
+        os.makedirs(save_path)
     else:
         os.makedirs(save_path)
 
-    shutil.copy(video,save_path)
-    files = os.listdir(save_path)
-    for f in files:
-        if ".mp4" in f :
-            os.rename(str(path/"workspace"/f),str(path/"workspace"/"video.mp4"))
+    # 保存原视频为 origin.mp4
+    origin_save_path = os.path.join(save_path, "origin.mp4")
+    shutil.copy(video, origin_save_path)
 
-    
-    return f"Image saved as {video} "
+    # 使用moviepy对视频进行重采样
+    video_clip = VideoFileClip(origin_save_path)
 
-    
+    # 根据选择的分辨率设置目标高度
+    if target_resolution == '240p':
+        target_height = 240
+    elif target_resolution == '720p':
+        target_height = 720
+    else:
+        raise ValueError("Unsupported resolution. Choose '240p' or '720p'.")
 
+    # 计算保持宽高比的目标宽度
+    original_width, original_height = video_clip.size
+    target_width = int(original_width * (target_height / original_height))
 
+    # 调整视频尺寸并保存
+    resized_clip = video_clip.resize((target_width, target_height))
+    video_save_path = os.path.join(save_path, "video.mp4")
+    resized_clip.write_videofile(video_save_path, codec='libx264')
+
+    return f"Original video saved as {origin_save_path} and resampled video saved as {video_save_path}"
      
 
 def error_prone_function(input_data):

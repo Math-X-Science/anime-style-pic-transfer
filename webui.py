@@ -44,6 +44,9 @@ with gr.Blocks() as demo:
                 choosed_model_v = gr.Dropdown(
                     choices=model_choice, value=model_choice[0], label="选择使用的模型:"
                 )
+                resolution_v = gr.Dropdown(
+                    choices=resolution_choice, value=resolution_choice[0], label="选择输出分辨率:"
+                )
                 
                 save_v = gr.Button("save_video", variant="primary")
                 with gr.Row():
@@ -72,7 +75,7 @@ with gr.Blocks() as demo:
     )
     save_v.click(
         fn=save_video,
-        inputs=[video_input],
+        inputs=[video_input,resolution_v],
         outputs=[video_text]
     )
 
