@@ -101,9 +101,25 @@ def scale_process(text, w):
      return w*9/16
 
 
-# 定义一个函数来保存图片并按顺序命名
-def save_image(image):
+def save_image(image, resolution):
+    """resolution: 选择的分辨率{360p, 480p, 720p, 1080p}"""
     pil_img = Image.fromarray(image.astype('uint8'))
+
+    # 获取图片原始尺寸
+    original_width, original_height = pil_img.size
+
+    # 根据选择的分辨率计算新尺寸，保持宽高比
+    if resolution == "240p":
+        new_height = 240
+        new_width = int(original_width * (240 / original_height))
+    elif resolution == "720p":
+        new_height = 720
+        new_width = int(original_width * (720 / original_height))
+    else:
+        raise ValueError("Unsupported resolution")
+
+    # 调整图片尺寸
+    resized_img = pil_img.resize((new_width, new_height), Image.ANTIALIAS)
 
     # 确定保存路径
     path = Path(os.path.realpath(__file__)).parent
@@ -114,23 +130,27 @@ def save_image(image):
 
     # workspace path config
     workspace = setting_config.get_workspace_config()
-    save_path = str(path / "workspace" )
+    save_path = str(path / "workspace")
 
     if os.path.exists(save_path):
-         shutil.rmtree(save_path)
-         os.makedirs(save_path)
+        shutil.rmtree(save_path)
+        os.makedirs(save_path)
     else:
         os.makedirs(save_path)
     
     save_path = str(path / "workspace" / workspace.input)
     if os.path.exists(save_path):
-         shutil.rmtree(save_path)
-         os.makedirs(save_path)
+        shutil.rmtree(save_path)
+        os.makedirs(save_path)
     else:
         os.makedirs(save_path)
-    pil_img.save(save_path+"\\image.png")
 
-    return f"Image saved as {pil_img}"
+    # 保存图片到指定路径，并按分辨率命名
+    save_file = os.path.join(save_path, f"image_{resolution}.png")
+    resized_img.save(save_file)
+
+    return f"Image saved as {save_file}"
+
 
 def save_video(video):
 

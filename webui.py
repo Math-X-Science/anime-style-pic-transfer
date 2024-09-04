@@ -6,7 +6,11 @@ from pathlib import Path
 import shutil
 from app_functions import *
 # functions
+"""模型选项"""
 model_choice = ["AnimeGANv3_Shinkai_37"]
+"""分辨率选项"""
+resolution_choice = ["240p","720p"]
+
 
 # UI排版
 with gr.Blocks() as demo:
@@ -17,6 +21,9 @@ with gr.Blocks() as demo:
                 )
                 choosed_model = gr.Dropdown(
                     choices=model_choice, value=model_choice[0], label="选择使用的模型:"
+                )
+                resolution = gr.Dropdown(
+                    choices=resolution_choice, value=resolution_choice[0], label="选择输出分辨率:"
                 )
 
                 state = gr.State(value=0)
@@ -57,7 +64,7 @@ with gr.Blocks() as demo:
     )
     save.click(
         fn=save_image,
-        inputs=[image_input],
+        inputs=[image_input,resolution],
         outputs=[text_output]
     )
     transfer_v2v.click(
