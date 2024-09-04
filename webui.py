@@ -34,8 +34,6 @@ with gr.Blocks() as demo:
 
             with gr.Column():
                 with gr.Column():
-
-
                         image_output = gr.Image(label= "输出图片")
 
                         text_output = gr.Textbox(label= "状态信息")
@@ -43,7 +41,7 @@ with gr.Blocks() as demo:
         with gr.Row():
             with gr.Column():
                 video_input = gr.Video()
-                choosed_model = gr.Dropdown(
+                choosed_model_v = gr.Dropdown(
                     choices=model_choice, value=model_choice[0], label="选择使用的模型:"
                 )
                 
@@ -69,7 +67,7 @@ with gr.Blocks() as demo:
     )
     transfer_v2v.click(
         fn=v2v_model_choce,
-        inputs=[choosed_model],
+        inputs=[choosed_model_v],
         outputs=[video_output]
     )
     save_v.click(
