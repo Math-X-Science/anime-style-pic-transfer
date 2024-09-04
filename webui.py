@@ -6,8 +6,7 @@ from pathlib import Path
 import shutil
 from app_functions import *
 # functions
-radio = ("x4","x8")
-languages = ("3:4","16:9")
+model_choice = ["AnimeGANv3_Shinkai_37"]
 
 # UI排版
 with gr.Blocks() as demo:
@@ -16,18 +15,14 @@ with gr.Blocks() as demo:
             with gr.Column():
                 image_input = gr.Image(
                 )
-                upscale_radio = gr.Dropdown(
-                    choices=radio, value=radio[0], label="超分辨率缩放比"
-                )
-                scale = gr.Dropdown(
-                    choices=languages, value=languages[0], label="人物截取比例"
+                choosed_model = gr.Dropdown(
+                    choices=model_choice, value=model_choice[0], label="选择使用的模型:"
                 )
 
                 state = gr.State(value=0)
                 save = gr.Button("save", variant="primary")
                 with gr.Row():
-                    uga_trans = gr.Button("UGATIT 去背景人物转绘", variant="primary")
-                    sd_trans = gr.Button("Stable Diffusion 去背景人物转绘", variant="primary")
+                    transfer_p2p = gr.Button("开始风格转换", variant="primary")
                 
 
             with gr.Column():
@@ -41,14 +36,13 @@ with gr.Blocks() as demo:
         with gr.Row():
             with gr.Column():
                 video_input = gr.Video()
-                upscale_radio = gr.Dropdown(
-                    choices=radio, value=radio[0], label="超分辨率缩放比"
+                choosed_model = gr.Dropdown(
+                    choices=model_choice, value=model_choice[0], label="选择使用的模型:"
                 )
                 
                 save_v = gr.Button("save_video", variant="primary")
                 with gr.Row():
-                    uga_v2v = gr.Button("UGATIT 去背景人物转绘", variant="primary")
-                    sd_v2v = gr.Button("Stable Diffusion 去背景人物转绘", variant="primary")
+                    transfer_v2v = gr.Button("开始风格转换", variant="primary")
 
             with gr.Column():
                 video_output = gr.Video()
@@ -56,31 +50,19 @@ with gr.Blocks() as demo:
 
 
 
-    uga_trans.click(
-         fn=UGATIT_origin_bacground_transfer,
-         inputs=[],
+    transfer_p2p.click(
+         fn=p2p_model_choice,
+         inputs=[choosed_model],
          outputs=[image_output]
     )
-    sd_trans.click(
-         fn=SD_origin_background_transfer,
-         inputs=[],
-         outputs=[image_output]
-    )
-
     save.click(
         fn=save_image,
         inputs=[image_input],
         outputs=[text_output]
     )
-    
-    uga_v2v.click(
-        fn=UGATIT_original_background_video_transfer,
-        inputs=[],
-        outputs=[video_output]
-    )
-    sd_v2v.click(
-        fn=SD_origin_background_video_transfer,
-        inputs=[],
+    transfer_v2v.click(
+        fn=v2v_model_choce,
+        inputs=[choosed_model],
         outputs=[video_output]
     )
     save_v.click(

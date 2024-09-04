@@ -190,3 +190,16 @@ def sepia(image, x, y, weight, scale):
     cropped_image = pil_img
 
     return cropped_image
+
+def p2p_model_choice(choosed_model):
+    if choosed_model == "AnimeGANv3_Shinkai_37":
+        output_img = SD_origin_background_transfer()
+    
+    return output_img
+
+def v2v_model_choce(choosed_model):
+    if choosed_model == "AnimeGANv3_Shinkai_37":
+        SD_origin_background_video_transfer()
+    
+    path = Path(os.path.realpath(__file__)).parent
+    return str(path/"workspace"/"output.mp4")
