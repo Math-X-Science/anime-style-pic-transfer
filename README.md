@@ -27,6 +27,8 @@ pip install -r requirements.txt
 python webui.py
 ```
 
+如果你在用我打包的一键包，那么请双击这里不存在的`运行webui.bat`。然后进入弹出的网址。
+
 ## 我引用和参考的仓库：
 
 [AnimeGANv3:使用 AnimeGANv3 制作自己的动画作品，包括将照片或视频制作成动画。](https://github.com/TachibanaYoshino/AnimeGANv3)
