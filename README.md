@@ -39,7 +39,28 @@ image2image 建议勾选超分，效果更佳。
 
 image2image 的输出分辨率可能让人混淆。实际上是指在不同的精度上对图片进行转换，实测较低的分辨率可以让图片细节变少，更接近油画，而分辨率越高，则越写实。（勾上超分进行的测试。）
 
-video2video 暂未接入超分选项，以及还未测试，不建议尝试。
+### 示例
+
+**原图:**
+
+![image-20250116120008451](https://fastly.jsdelivr.net/gh/MrXnneHang/blog_img/BlogHosting/img/25/01/202501161200503.png)
+
+**240p+超分:**
+
+![image-20250116120059030](https://fastly.jsdelivr.net/gh/MrXnneHang/blog_img/BlogHosting/img/25/01/202501161201422.png)
+
+**720p+超分:**
+
+![image-20250116120134334](https://fastly.jsdelivr.net/gh/MrXnneHang/blog_img/BlogHosting/img/25/01/202501161201417.png)
+
+按理来说，如果一直提高或者降低这个精度，比如送入64p的图片可能可以达到接近像素画的效果。
+
+而一直提高这个精度，可能画出来的图片就会和原图几乎一模一样。
+
+这个值得探索一下。但需要该点代码。后续可能会把这个输出分辨率设成一个可拖动的滑块，自由设置。
+
+
+ps: video2video 暂未接入超分选项，以及还未测试，不建议尝试。
 
 ## 我引用和参考的仓库：
 
