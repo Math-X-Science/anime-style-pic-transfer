@@ -10,6 +10,8 @@ from app_functions import *
 model_choice = ["AnimeGANv3_Shinkai_37"]
 """分辨率选项"""
 resolution_choice = ["240p","720p"]
+"""超分辨率选项"""
+scale_choice = ["2x","4x"]
 
 
 # UI排版
@@ -25,6 +27,8 @@ with gr.Blocks() as demo:
                 resolution = gr.Dropdown(
                     choices=resolution_choice, value=resolution_choice[0], label="选择输出分辨率:"
                 )
+                # 勾选项，是否选择超分
+                upscale_or_not = gr.Checkbox(label="是否进行超分", value=False)
 
                 state = gr.State(value=0)
                 save = gr.Button("save", variant="primary")
@@ -55,12 +59,27 @@ with gr.Blocks() as demo:
             with gr.Column():
                 video_output = gr.Video()
                 video_text = gr.Textbox(label= "状态信息")
+                
+    with gr.Tab(label="realesr-gan (testing)"):
+        with gr.Row():
+            with gr.Column():
+                image_input_low_scale = gr.Image()
+                image_scale = gr.Dropdown(
+                    choices=scale_choice, value=scale_choice[1], label="选择超分倍率:"
+                )
+                with gr.Row():
+                    upscale_p2p = gr.Button("开始超分", variant="primary")
+
+            with gr.Column():
+                video_output = gr.Image()
+                video_text = gr.Textbox(label= "状态信息")
+
 
 
 
     transfer_p2p.click(
          fn=p2p_model_choice,
-         inputs=[choosed_model],
+         inputs=[choosed_model,upscale_or_not],
          outputs=[image_output]
     )
     save.click(
@@ -77,6 +96,11 @@ with gr.Blocks() as demo:
         fn=save_video,
         inputs=[video_input,resolution_v],
         outputs=[video_text]
+    )
+    upscale_p2p.click(
+        fn=upscale_image,
+        inputs=[image_input_low_scale,image_scale],
+        outputs=[video_output]
     )
 
 

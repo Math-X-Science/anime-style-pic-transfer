@@ -6,6 +6,7 @@ import shutil
 from PIL import Image
 import os
 import logging
+
 it_mode = INTERACTIVE_MODE_AUTO
 base_dir = str(Path(os.path.realpath(__file__)).parent)
 if base_dir == "D:\\program\\UGATIT-pytorch-app-master\\tools":
@@ -75,6 +76,7 @@ def SD_origin_background_transfer():
     files = os.listdir(str(path / "workspace" /workspace.output/"imgs"))
     output_image = Image.open(str(path / "workspace" / workspace.output / "imgs" /(files[0])))
     return output_image
+
 def SD_origin_background_video_transfer():
     print("[INFO] UGATIT_original_background_video_transfer")
     """
@@ -199,6 +201,28 @@ def save_video(video, target_resolution='720p'):
 
     return f"Original video saved as {origin_save_path} and resampled video saved as {video_save_path}"
      
+def upscale_image(image, scale):
+    """将输入图片放大scale倍"""
+    if scale not in ["2x", "4x", "8x"]:
+        raise ValueError("Unsupported scale. Choose 2, 4, or 8.")
+    if scale == "4x":
+        scale_factor = 4
+        execu = "./realesr-gan/realesrgan-ncnn-vulkan.exe"
+        # ./realesrgan-ncnn-vulkan.exe -i image_240p.png -o output.png -n realesr-animevideov3-x4
+        # 保存 image 到./workspace/input/image.png
+        # 保存 output 到./workspace/output/image.png
+        # 检查 image 是否是 Image 实例, 如果是，就跳过
+        if isinstance(image, Image.Image):
+            pass
+        else:
+            image = Image.fromarray(image)
+        image.save("./workspace/input/image.png")
+        # 执行命令
+        subprocess.run([execu, "-i", "./workspace/input/image.png", "-o", "./workspace/output/image.png", "-n", "realesr-animevideov3-x4"])
+        # 读取图片
+        output_image = Image.open("./workspace/output/image.png")
+        return output_image
+
 
 def error_prone_function(input_data):
     try:
@@ -227,9 +251,11 @@ def sepia(image, x, y, weight, scale):
 
     return cropped_image
 
-def p2p_model_choice(choosed_model):
+def p2p_model_choice(choosed_model,upscale_or_not):
     if choosed_model == "AnimeGANv3_Shinkai_37":
         output_img = SD_origin_background_transfer()
+    if upscale_or_not:
+        output_img = upscale_image(output_img, "4x")
     
     return output_img
 
