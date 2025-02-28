@@ -1,3 +1,7 @@
+## ps:
+
+还没写 README,正在修改我的shit code.
+
 ## 环境:
 
 * 你需要ffmpeg,ffprobe.exe,并且根据你的路径修改path.yaml中路径。
