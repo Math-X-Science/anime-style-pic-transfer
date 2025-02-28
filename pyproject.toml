@@ -5,9 +5,14 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "easydict==1.8",
     "gradio==5.16.1",
+    "moviepy==1.0.2",
+    "onnxruntime==1.20.0",
+    "opencv-python==4.11.0.86",
     "pyaml==25.1.0",
     "socksio==1.0.0",
+    "tqdm==4.43.0",
 ]
 authors = [{ name = "MrXnneHang", email = "XnneHang@gmail.com" }]
 keywords = []
@@ -32,7 +37,7 @@ Repository = "https://github.com/MrXnneHang/yutto-uiya"
 Issues = "https://github.com/MrXnneHang/yutto-uiya/issues"
 
 [project.scripts]
-AnimeGAN-Converter = "converter.__main__:main"
+uiya = "converter.__main__:main"
 
 [tool.uv.workspace]
 members = ["packages/*"]
