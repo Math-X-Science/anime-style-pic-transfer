@@ -7,3 +7,4 @@ tmp.py
 *.param
 realesrgan/
 .venv/
+*.7z
