@@ -1,2 +1,9 @@
 __pycache__/
 tmp.py
+*.jpg
+*.png
+*.bin
+*.onnx
+*.param
+realesrgan/
+.venv/
