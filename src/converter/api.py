@@ -51,24 +51,16 @@ def animegan_video_transfer():
     return str(path_parser.output_video)
 
 
-def save_image(image, resolution: Resolution):  # type:ignore
+def save_image(image, resolution: int):  # type:ignore
     # TODO: 后面考虑这image是啥。
     pil_img = Image.fromarray(image.astype("uint8"))  # type:ignore
     # 获取图片原始尺寸
     original_width, original_height = pil_img.size
 
-    # 根据选择的分辨率计算新尺寸，保持宽高比
-    if resolution == "240p":
-        new_height = 240
-        new_width = int(original_width * (240 / original_height))
-    elif resolution == "720p":
-        new_height = 720
-        new_width = int(original_width * (720 / original_height))
-    elif resolution == "1080p":
-        new_height = 1080
-        new_width = int(original_width * (1080 / original_height))
-    else:
-        raise ValueError("Unsupported resolution")
+    new_height = resolution
+    new_width = int(original_width * (resolution / original_height))
+
+
 
     # 调整图片尺寸
     resized_img = pil_img.resize((new_width, new_height), Image.Resampling.LANCZOS)

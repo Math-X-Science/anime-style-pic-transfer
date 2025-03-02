@@ -23,11 +23,17 @@ def main():
                     #     value=model_choice[0],
                     #     label="选择使用的模型:",
                     # )
-                    resolution = gr.Dropdown(
-                        choices=resolution_choice,
-                        value=resolution_choice[0],
+                    resolution = gr.Slider(
+                        minimum=120,
+                        maximum=1080,
+                        step=30,
+                        value=720,  # 默认值，可以根据需要修改
                         label="选择输出分辨率:",
                     )
+
+                    resolution_output = gr.Textbox(label="Selected Resolution (Integer)")
+
+                    resolution.change(lambda x: int(x), resolution, resolution_output)
                     # 勾选项，是否选择超分
                     upscale = gr.Checkbox(label="是否进行超分", value=False)
                     save = gr.Button("save", variant="primary")

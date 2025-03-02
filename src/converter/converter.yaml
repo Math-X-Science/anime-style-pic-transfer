@@ -5,8 +5,8 @@ fps: 24
 
 model: "./models/AnimeGANv3_Shinkai_37.onnx"
 
-realesr_excu: "./realesrgan/realesrgan-ncnn-vulkan"
-realesr_model: "./realsergan/models/realesrgan-x4plus-anime.bin"
+realesr_excu: "./realesrgan/realesrgan-ncnn-vulkan.exe"
+realesr_model: "realesrgan-x4plus-anime"
 
 workspace:
   root: "./workspace"
