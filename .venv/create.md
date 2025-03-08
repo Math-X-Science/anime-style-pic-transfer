@@ -1,0 +1,1 @@
+run `uv sync` to init the python denpendencies for the project.
