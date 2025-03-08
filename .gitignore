@@ -6,5 +6,11 @@ tmp.py
 *.onnx
 *.param
 realesrgan/
-.venv/
+bin/
+lib/
+share/
+lib64/
+CACHEDIR.TAG
+pyvenv.cfg
 *.7z
+
