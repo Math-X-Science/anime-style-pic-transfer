@@ -1,6 +1,6 @@
+import copy
 import json
 import os
-import copy
 import sys
 
 # 获取当前脚本所在的目录的上级目录
@@ -106,7 +106,6 @@ def read_config(path, webui=True):
 
 
 class VideoConfig:
-
     def __init__(self, config: dict):
         self.config = config
 
@@ -125,7 +124,6 @@ class VideoConfig:
 
 # 工作路径
 class Workspace:
-
     def __init__(
         self,
         root: str,
@@ -175,7 +173,6 @@ DRAW_TYPE_TXT2IMG = "txt2img"
 
 # 策略参数设置配置
 class SettingConfig:
-
     def __init__(self, config: dict):
         self.config = config
         self.webui_work_api = None
@@ -310,7 +307,6 @@ class SettingConfig:
 
 
 class WebuiConfig:
-
     def __init__(self, config: dict):
         self.config = config
 

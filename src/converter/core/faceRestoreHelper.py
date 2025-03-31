@@ -1,5 +1,6 @@
-import cv2
 import os
+
+import cv2
 import numpy as np
 
 try:
@@ -11,7 +12,6 @@ except:
 
 import onnxruntime as ort
 from PIL import Image
-
 
 device_name = ort.get_device()
 providers = None

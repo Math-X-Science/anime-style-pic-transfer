@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import os
 import platform
-
-import tomllib  # Python 3.11+ 自带 , < 3.11 要自行安装
 from pathlib import Path
-from typing import TYPE_CHECKING, Any ,overload
+from typing import TYPE_CHECKING, Any, overload
 
 import tomli_w as tomlw  # 安装 tomli_w 用于写入
+import tomllib  # Python 3.11+ 自带 , < 3.11 要自行安装
+
 toml_loads = tomllib.loads
 toml_dumps = tomlw.dumps  # 使用 tomlw.dumps
 
 if TYPE_CHECKING:
     from converter._dataclss import ConverterSetting, WorkspaceSetting
+
 
 def xdg_config_home() -> Path:
     if (env := os.environ.get("XDG_CONFIG_HOME")) and (path := Path(env)).is_absolute():
@@ -32,13 +33,18 @@ def search_for_settings_file(setting_name: str) -> Path | None:
         return None
     return settings_file
 
-@overload
-def load_settings_file(setting_name: str, setting: type[ConverterSetting]) -> ConverterSetting:
-    ...
 
 @overload
-def load_settings_file(setting_name: str, setting: type[WorkspaceSetting]) -> WorkspaceSetting:
-    ...
+def load_settings_file(
+    setting_name: str, setting: type[ConverterSetting]
+) -> ConverterSetting: ...
+
+
+@overload
+def load_settings_file(
+    setting_name: str, setting: type[WorkspaceSetting]
+) -> WorkspaceSetting: ...
+
 
 def load_settings_file(
     setting_name: str,
@@ -59,15 +65,18 @@ def load_settings_file(
     write_settings_file(settings_name=setting_name, settings=validated_settings)
     return validated_settings
 
-@overload
-def write_settings_file(settings_name: str, settings: ConverterSetting) -> None:
-    ...
 
 @overload
-def write_settings_file(settings_name: str, settings: WorkspaceSetting) -> None:
-    ...
+def write_settings_file(settings_name: str, settings: ConverterSetting) -> None: ...
 
-def write_settings_file(settings_name: str, settings: ConverterSetting | WorkspaceSetting) -> None:
+
+@overload
+def write_settings_file(settings_name: str, settings: WorkspaceSetting) -> None: ...
+
+
+def write_settings_file(
+    settings_name: str, settings: ConverterSetting | WorkspaceSetting
+) -> None:
     """将 Setting 对象写入 TOML 文件。"""
     settings_file = search_for_settings_file(setting_name=settings_name)
     if settings_file is None:

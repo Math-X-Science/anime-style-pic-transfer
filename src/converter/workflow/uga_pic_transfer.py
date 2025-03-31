@@ -1,6 +1,6 @@
+import os
 import subprocess
 import sys
-import os
 import time
 
 # 获取当前脚本所在的目录的上级目录
@@ -15,7 +15,7 @@ def count_time(run_scrit_name, config_path, it_mode):
     start_time = time.time()
     subprocess.run(["python", f"{run_scrit_name}", config_path, it_mode])
     end_time = time.time()
-    print(f"用时{end_time-start_time}s")
+    print(f"用时{end_time - start_time}s")
 
 
 it_mode = INTERACTIVE_MODE_AUTO
@@ -33,4 +33,4 @@ start_time = time.time()
 print("开始批量图生图：")
 count_time("tools\\UGATIT_BatchImg2Img.py", config_path, it_mode)
 end_time = time.time()
-print(f"总计用时{end_time-start_time}")
+print(f"总计用时{end_time - start_time}")

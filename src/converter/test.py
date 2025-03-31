@@ -1,7 +1,6 @@
 from converter._path_parser import PathParser
 
 
-
 def main():
     parser = PathParser()
     print(parser.ffmpeg)

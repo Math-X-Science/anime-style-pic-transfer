@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-import yaml
 import os
 import platform
+from pathlib import Path
+from typing import Any
+
+import yaml
 
 
 def xdg_config_home() -> Path:

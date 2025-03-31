@@ -1,12 +1,14 @@
 import argparse
-import cv2
-import numpy as np
 import os
 import subprocess
-from tqdm import tqdm
+
+import cv2
+import numpy as np
 import onnxruntime as ort
+from tqdm import tqdm
+
 from converter.core import faceRestoreHelper
-from converter.core.config_core import ort_sess_options, get_image_file_list
+from converter.core.config_core import get_image_file_list, ort_sess_options
 
 device_name = ort.get_device()
 print(device_name)

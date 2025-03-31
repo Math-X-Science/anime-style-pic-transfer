@@ -1,13 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
+
 from converter._dataclss import ConverterSetting, WorkspaceSetting
-from converter.utils.config import load_settings_file,write_settings_file
+from converter.utils.config import load_settings_file, write_settings_file
+
 
 class PathParser:
-    converter_settings:ConverterSetting = load_settings_file("converter.toml", ConverterSetting)
-    workspace_settings:WorkspaceSetting = load_settings_file("workspace.toml", WorkspaceSetting)
-    
+    converter_settings: ConverterSetting = load_settings_file(
+        "converter.toml", ConverterSetting
+    )
+    workspace_settings: WorkspaceSetting = load_settings_file(
+        "workspace.toml", WorkspaceSetting
+    )
+
     ffmpeg: Path = Path(converter_settings.ffmpeg)
     ffprobe: Path = Path(converter_settings.ffprobe)
     model_path: Path = Path(converter_settings.model)

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-
 from typing import Literal
-
 
 # 模型选项
 ModelName = Literal["AnimeGANv3_Shinkai_37"]

@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 # 获取当前脚本所在的目录的上级目录
 current_dir = os.path.dirname(os.path.abspath(__file__))

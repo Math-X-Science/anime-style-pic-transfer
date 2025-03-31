@@ -1,5 +1,5 @@
-import subprocess
 import os
+import subprocess
 import sys
 
 # 获取当前脚本所在的目录的上级目录
@@ -7,12 +7,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 # 将上级目录添加到模块搜索路径中
 sys.path.insert(0, parent_dir)
-import torch
 import shutil
-from utils import load_path_yamls
 
+import torch
 from tools.common_config import *
-
+from utils import load_path_yamls
 
 if __name__ == "__main__":
     paths = load_path_yamls()

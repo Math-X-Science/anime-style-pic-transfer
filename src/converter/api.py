@@ -1,17 +1,21 @@
+import os
+import shutil
 import subprocess
 from pathlib import Path
-import shutil
+
 from PIL import Image
-import os
 from tqdm import tqdm
 
-from converter.workflow.common_config import *
-from converter._dataclss import ConfigParser, PathParser
+from converter._dataclss import ConverterSetting, WorkspaceSetting
 from converter._typing import Resolution, Scale
 from converter.core.onnx_infer import image_enforce
+from converter.utils.config import load_config, write_config
+from converter.workflow.common_config import *
 
-config_parser = ConfigParser()
-path_parser = PathParser()
+converter_settings = load_config("converter.toml", ConverterSetting)
+workspace_settings = load_config("workspace.toml", WorkspaceSetting)
+
+
 scale_list = list(Scale.__args__)
 
 
@@ -59,8 +63,6 @@ def save_image(image, resolution: int):  # type:ignore
 
     new_height = resolution
     new_width = int(original_width * (resolution / original_height))
-
-
 
     # 调整图片尺寸
     resized_img = pil_img.resize((new_width, new_height), Image.Resampling.LANCZOS)

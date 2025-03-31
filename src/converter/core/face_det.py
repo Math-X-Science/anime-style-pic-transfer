@@ -1,21 +1,22 @@
-import cv2
 import os
+
+import cv2
+import numpy as np
 import onnxruntime
 from PIL import Image, ImageDraw
-import numpy as np
 
 try:
     from config_core import model_args, ort_sess_options
     from retinaface_ import cfg_re50
+    from retinaface_.box_utils import decode, decode_landm
     from retinaface_.prior_box import PriorBox
     from retinaface_.py_cpu_nms import py_cpu_nms
-    from retinaface_.box_utils import decode, decode_landm
 except:
     from .config_core import model_args, ort_sess_options
     from .retinaface_ import cfg_re50
+    from .retinaface_.box_utils import decode, decode_landm
     from .retinaface_.prior_box import PriorBox
     from .retinaface_.py_cpu_nms import py_cpu_nms
-    from .retinaface_.box_utils import decode, decode_landm
 
 
 device_name = onnxruntime.get_device()

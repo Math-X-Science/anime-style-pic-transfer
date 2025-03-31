@@ -1,4 +1,5 @@
 import os
+
 import easydict
 import onnxruntime as ort
 
@@ -7,8 +8,8 @@ pwd = os.path.abspath(os.path.dirname(__file__))
 
 model_args = easydict.EasyDict(
     {
-        "Retina_face_model_path": f'{opj(pwd, "model_core", "Resnet50_Final.onnx")}',
-        "parsing_parsenet_model_path": f'{opj(pwd, "model_core", "parsing_parsenet_sim.onnx")}',
+        "Retina_face_model_path": f"{opj(pwd, 'model_core', 'Resnet50_Final.onnx')}",
+        "parsing_parsenet_model_path": f"{opj(pwd, 'model_core', 'parsing_parsenet_sim.onnx')}",
     }
 )
 

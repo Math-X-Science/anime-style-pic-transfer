@@ -1,5 +1,6 @@
 import os
 import sys
+
 from tqdm import tqdm
 
 # 获取当前脚本所在的目录的上级目录
@@ -9,20 +10,20 @@ parent_dir = os.path.dirname(current_dir)
 # 将上级目录添加到模块搜索路径中
 sys.path.insert(0, parent_dir)
 
-import torch as t
-from torchvision import transforms
-from PIL import Image
-from model import Generator
-from utils import load_config, find_latest_model
 import shutil
+
+import torch as t
+from model import Generator
+from PIL import Image
 from tools.common_config import *
+from torchvision import transforms
+from utils import find_latest_model, load_config
 
 IMG_EXTENSIONS = [".jpg", ".jpeg", ".png", ".ppm", ".bmp", ".pgm", ".tif"]
 
 
 # 加载模型
 def load_model():
-
     args = load_config(parent_dir + "\\config.yaml")
     _, model_path = find_latest_model(args["result_dir"], args["dataset"])
     if model_path is None:

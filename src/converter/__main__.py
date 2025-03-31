@@ -1,7 +1,7 @@
 import gradio as gr
 
-from converter.api import animegan_picture_transfer, save_image
 from converter._typing import ModelName, Resolution, Scale
+from converter.api import animegan_picture_transfer, save_image
 
 # functions
 
@@ -31,7 +31,9 @@ def main():
                         label="选择输出分辨率:",
                     )
 
-                    resolution_output = gr.Textbox(label="Selected Resolution (Integer)")
+                    resolution_output = gr.Textbox(
+                        label="Selected Resolution (Integer)"
+                    )
 
                     resolution.change(lambda x: int(x), resolution, resolution_output)
                     # 勾选项，是否选择超分

@@ -5,7 +5,6 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 
 
-
 class ConverterSetting(BaseModel):
     ffmpeg: Annotated[str, Field(default="ffmpeg")]
     ffprobe: Annotated[str, Field(default="ffprobe")]

@@ -1,9 +1,9 @@
 import base64
 from io import BytesIO
 
+import cv2
 import numpy as np
 from PIL import Image
-import cv2
 
 
 # 定义图片转base64函数

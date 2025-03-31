@@ -1,7 +1,6 @@
 # import torch
 import numpy as np
 
-
 # def point_form(boxes):
 #     """ Convert prior_boxes to (xmin, ymin, xmax, ymax)
 #     representation for comparison to point form ground truth data.

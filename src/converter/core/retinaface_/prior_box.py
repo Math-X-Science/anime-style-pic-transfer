@@ -1,6 +1,7 @@
 from itertools import product as product
-import numpy as np
 from math import ceil
+
+import numpy as np
 
 
 class PriorBox(object):
