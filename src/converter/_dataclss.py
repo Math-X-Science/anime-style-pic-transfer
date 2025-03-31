@@ -1,48 +1,27 @@
-from dataclasses import dataclass, field
-from pathlib import Path
+from __future__ import annotations
 
-from converter.utils import load_config
+from typing import Annotated
 
-
-@dataclass
-class ConfigParser:
-    ffmpeg: str = ""  # Provide a default value (or use field if needed)
-    ffprobe: str = ""
-    model: str = ""
-    fps: int = 0  # Provide a default value (or use field if needed)
-    realesr_excu: str = ""
-    realesr_model: str = ""
-    workspace: dict[str, str] = field(
-        default_factory=dict
-    )  # Use default_factory correctly
-
-    def __post_init__(self):
-        config = load_config()
-        self.ffmpeg = str(config.get("ffmpeg", ""))
-        self.ffprobe = str(config.get("ffprobe", ""))
-        self.model = str(config.get("model", ""))
-        self.realesr_excu = str(config.get("realesr_excu", ""))
-        self.realesr_model = str(config.get("realesr_model", ""))
-        self.fps = int(config.get("fps", 24))  # Provide a default value
-        self.workspace = config.get("workspace", {})
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class PathParser:
-    config = ConfigParser()
-    ffmpeg: Path = Path(config.ffmpeg)
-    ffprobe: Path = Path(config.ffprobe)
-    model_path: Path = Path(config.model)
-    realesr_excu: Path = Path(config.realesr_excu)
-    realesr_model: Path = Path(config.realesr_model)
 
-    workspace: Path = Path(config.workspace["root"])
+class ConverterSetting(BaseModel):
+    ffmpeg: Annotated[str, Field(default="ffmpeg")]
+    ffprobe: Annotated[str, Field(default="ffprobe")]
+    fps: Annotated[int, Field(default=24)]
+    model: Annotated[str, Field(default="./models/AnimeGANv3_Shinkai_37.onnx")]
+    realesr_excu: Annotated[str, Field(default="./realesrgan/realesrgan-ncnn-vulkan")]
+    realesr_model: Annotated[str, Field(default="realesrgan-x4plus-anime")]
 
-    input: Path = workspace / config.workspace["input"]
-    output: Path = workspace / config.workspace["output"]
-    tmp: Path = workspace / config.workspace["tmp"]
-    input_image: Path = workspace / config.workspace["input_image"]
-    output_image: Path = workspace / config.workspace["output_image"]
-    upscale_image: Path = workspace / config.workspace["upscale_image"]
-    input_video: Path = workspace / config.workspace["input_video"]
-    output_video: Path = workspace / config.workspace["output_video"]
+
+class WorkspaceSetting(BaseModel):
+    root: Annotated[str, Field(default="./workspace")]
+    input: Annotated[str, Field(default="input")]
+    output: Annotated[str, Field(default="output")]
+    tmp: Annotated[str, Field(default="tmp")]
+    input_video: Annotated[str, Field(default="input_video.mp4")]
+    output_video: Annotated[str, Field(default="output_video.mp4")]
+    input_image: Annotated[str, Field(default="input_image.jpg")]
+    output_image: Annotated[str, Field(default="output_image.jpg")]
+    upscale_image: Annotated[str, Field(default="upscale_image.jpg")]

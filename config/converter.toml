@@ -1,0 +1,6 @@
+ffmpeg = "ffmpeg"
+ffprobe = "ffprobe"
+fps = 24
+model = "./models/AnimeGANv3_Shinkai_37.onnx"
+realesr_excu = "./realesrgan/realesrgan-ncnn-vulkan"
+realesr_model = "realesrgan-x4plus-anime"
