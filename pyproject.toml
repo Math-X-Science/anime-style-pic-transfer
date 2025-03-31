@@ -9,9 +9,9 @@ dependencies = [
     "moviepy==1.0.2",
     "onnxruntime==1.20.0",
     "opencv-python==4.11.0.86",
-    "pyaml==25.1.0",
     "socksio==1.0.0",
     "tqdm>=4.43.0",
+
     "pydantic==2.10.6",
     "tomli_w==1.2.0",
     "streamlit==1.43.2",
