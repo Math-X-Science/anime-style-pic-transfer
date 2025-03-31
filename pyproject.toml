@@ -3,7 +3,7 @@ name = "AnimeGAN-Converter"
 version = "1.0.0"
 description = ""
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "easydict==1.8",
     "gradio==5.16.1",
@@ -12,7 +12,9 @@ dependencies = [
     "opencv-python==4.11.0.86",
     "pyaml==25.1.0",
     "socksio==1.0.0",
-    "tqdm==4.43.0",
+    "tqdm>=4.43.0",
+    "pydantic==2.10.6",
+    "tomli_w==1.2.0",
 ]
 authors = [{ name = "MrXnneHang", email = "XnneHang@gmail.com" }]
 keywords = []
@@ -23,28 +25,27 @@ classifiers = [
   "Typing :: Typed",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
 ]
 
-[project.urls]
-Homepage = "https://github.com/MrXnneHang/yutto-uiya"
-Documentation = "https://github.com/MrXnneHang/yutto-uiya"
-Repository = "https://github.com/MrXnneHang/yutto-uiya"
-Issues = "https://github.com/MrXnneHang/yutto-uiya/issues"
+[dependency-groups]
+dev = [
+  "pyright>=1.1.391",
+  "ruff>=0.9.3",
+  "pytest>=8.3.4",
+  "pytest-rerunfailures>=15.0",
+]
 
 [project.scripts]
-uiya = "converter.__main__:main"
-
-[tool.uv.workspace]
-members = ["packages/*"]
+converter = "converter.__main__:main"
+test = "converter.test:main"
 
 [tool.pyright]
 include = ["src/converter"]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 typeCheckingMode = "strict"
 
 [tool.hatch.build.targets.wheel]
