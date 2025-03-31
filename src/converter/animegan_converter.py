@@ -1,179 +1,219 @@
+import io  # Required for handling byte streams
+
 import streamlit as st
 from PIL import Image
-import io  # Required for handling byte streams if needed
 
-# Assuming these imports work and contain the necessary definitions
+# --- Assuming these imports work and contain the necessary definitions ---
 try:
+    # Assuming converter is installed or in PYTHONPATH
+    from converter._path_parser import PathParser
     from converter._typing import ModelName, Resolution, Scale
-    from converter.api import animegan_picture_transfer, save_image
+    from converter.api import (
+        animegan_picture_transfer,  # Keep save_image if needed elsewhere, but it's called internally now
+    )
+
+    # Initialize PathParser (ensure paths are valid in the execution environment)
+    path_parser = PathParser()
+
     # Get choices (handle potential errors if typing is complex)
-    try:
-        model_choice = list(ModelName.__args__) # type: ignore
-    except AttributeError:
-        st.warning("Could not dynamically get ModelName choices. Using placeholders.")
-        model_choice = ["ModelA", "ModelB", "ModelC"] # Placeholder
-    # resolution_choice seems unused in active Gradio code, using Slider instead
-    # scale_choice seems unused in active Gradio code
-except ImportError:
-    st.error("Failed to import converter modules. Please ensure the 'converter' package is installed and accessible.")
-    # Define dummy functions and choices for UI layout preview
-    def animegan_picture_transfer(image, upscale):
-        st.warning("`animegan_picture_transfer` not found. Displaying input image.")
-        if image:
-             return image.copy() # Return a copy to avoid modifying original
-        return None
-    def save_image(image, resolution):
-        st.warning("`save_image` not found.")
-        if image:
-            return f"Save action simulated for image with resolution {resolution}."
-        return "Save action requires an image."
-    model_choice = ["ModelA", "ModelB", "ModelC"] # Placeholder
-    # resolution_choice = [240, 480, 720, 1080] # Placeholder
-    # scale_choice = [2, 4, 8] # Placeholder
+    # model_choice = list(ModelName.__args__) # type: ignore # This isn't used in the UI yet
+except ImportError as e:
+    st.error(f"Failed to import necessary modules from 'converter': {e}")
+    st.stop()  # Stop execution if core components are missing
+except Exception as e:
+    st.error(f"Error during initial setup: {e}")
+    st.stop()
 
 # --- Streamlit App ---
-
 st.set_page_config(layout="wide")
 st.title("🖼️ Image Style Transfer and Tools")
 
 # --- Session State Initialization ---
-if 'output_image' not in st.session_state:
+if "output_image" not in st.session_state:
     st.session_state.output_image = None
-if 'status_text' not in st.session_state:
+if "status_text" not in st.session_state:
     st.session_state.status_text = ""
-if 'input_image_display' not in st.session_state:
+if "input_image_display" not in st.session_state:
     st.session_state.input_image_display = None
 
 # --- UI Layout ---
-
-tab1, tab2, tab3 = st.tabs(["🎨 Image-to-Image", "🎬 Video-to-Video (Placeholder)", "🔍 RealESRGAN (Placeholder)"])
+tab1, tab2, tab3 = st.tabs(
+    [
+        "🎨 Image-to-Image",
+        "🎬 Video-to-Video (Placeholder)",
+        "🔍 RealESRGAN (Placeholder)",
+    ]
+)
 
 with tab1:
     col1, col2 = st.columns(2)
 
     with col1:
         st.header("Input & Settings")
-        uploaded_file = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg", "webp"])
+        uploaded_file = st.file_uploader(
+            "Choose an image...", type=["png", "jpg", "jpeg", "webp"]
+        )
 
-        input_image = None # Initialize input_image before the conditional block
+        input_image = None  # Initialize input_image before the conditional block
 
         if uploaded_file is not None:
             try:
                 # Read the image using PIL
                 input_image = Image.open(uploaded_file)
-                st.session_state.input_image_display = input_image # Store for display
+                # Ensure image is in RGB or RGBA format that PIL can handle well
+                # Convert palette images (like some GIFs) or grayscale to RGB
+                if input_image.mode == "P" or input_image.mode == "L":
+                    input_image = input_image.convert("RGB")
+                # Keep alpha if present, otherwise convert potentially odd modes to RGB
+                elif input_image.mode not in ("RGB", "RGBA"):
+                    input_image = input_image.convert("RGB")
+
+                st.session_state.input_image_display = input_image  # Store for display
+
                 # Display the uploaded image
-                st.image(input_image, caption="Uploaded Image", use_column_width=True)
+                st.image(
+                    input_image, caption="Uploaded Image", use_container_width=True
+                )
 
                 # --- Settings ---
                 resolution = st.slider(
                     label="Select Output Resolution (Longest Side):",
-                    min_value=120,
-                    max_value=1080,
+                    min_value=128,  # Lower min might be useful
+                    max_value=2048,  # Higher max might be desired
                     value=720,
-                    step=30,
-                    help="Adjust the desired output resolution."
+                    step=64,  # Steps powers of 2 or divisible by common factors
+                    help="Adjust the desired output resolution (longest side). Aspect ratio is preserved.",
                 )
-                st.write(f"Selected Resolution: `{int(resolution)}`")
+                st.write(f"Selected Resolution: `{int(resolution)}` px")
 
-                upscale = st.checkbox("Enable Upscaling?", value=False, help="Check this box to perform upscaling during transfer.")
+                upscale = st.checkbox(
+                    "Enable 4x Upscaling (RealESRGAN)?",
+                    value=False,
+                    help="Check this box to apply 4x upscaling after style transfer.",
+                )
 
                 # --- Action Buttons ---
-                button_col1, button_col2 = st.columns(2)
-                with button_col1:
-                    transfer_button = st.button("✨ Start Style Transfer", type="primary", use_column_width=True)
-                with button_col2:
-                    save_button = st.button("💾 Save Action (Example)", use_column_width=True, help="Calls the save function with the *input* image and resolution setting.")
+                transfer_button = st.button(
+                    "✨ Start Style Transfer",
+                    type="primary",
+                    use_container_width=True,
+                    key="transfer_btn",
+                )
 
-                # --- Process Actions (Moved Here) ---
-                # Process clicks only if the buttons exist (i.e., file uploaded)
-                if transfer_button: # No need to check input_image again, it must exist here
+                # --- Process Actions ---
+                if transfer_button and input_image:  # Ensure input_image is valid
                     with st.spinner("🎨 Applying style transfer... Please wait."):
                         try:
-                            processed_image = animegan_picture_transfer(input_image, upscale)
+                            # Call the API function with the PIL image, resolution, and upscale flag
+                            processed_image = animegan_picture_transfer(
+                                input_image, int(resolution), upscale
+                            )
+
+                            # Store result in session state
                             st.session_state.output_image = processed_image
-                            st.session_state.status_text = "✅ Style transfer successful!"
+                            st.session_state.status_text = (
+                                "✅ Style transfer successful!"
+                            )
+                            st.success(
+                                st.session_state.status_text
+                            )  # Show success message immediately
+
                         except Exception as e:
                             st.session_state.output_image = None
-                            st.session_state.status_text = f"❌ Error during style transfer: {e}"
-                            st.error(st.session_state.status_text) # Show error immediately
-
-                if save_button: # No need to check input_image again
-                    with st.spinner("💾 Processing Save Action..."):
-                        try:
-                            status = save_image(input_image, int(resolution))
-                            # Update status text, don't clear the output image from a previous transfer
-                            st.session_state.status_text = f"ℹ️ Save Status: {status}"
-                        except Exception as e:
-                            # Update status text, don't clear the output image
-                            st.session_state.status_text = f"❌ Error during save action: {e}"
-                            st.error(st.session_state.status_text) # Show error immediately
+                            st.session_state.status_text = (
+                                f"❌ Error during style transfer: {e}"
+                            )
+                            # Log the full error for debugging if needed
+                            # import traceback
+                            # st.error(f"{st.session_state.status_text}\n```\n{traceback.format_exc()}\n```")
+                            st.error(
+                                st.session_state.status_text
+                            )  # Show error immediately
 
             except Exception as e:
-                st.error(f"Error loading image: {e}")
+                st.error(f"Error loading or preparing image: {e}")
                 # Reset states if image loading failed
                 st.session_state.input_image_display = None
                 st.session_state.output_image = None
                 st.session_state.status_text = "Failed to load image."
-                input_image = None # Ensure input_image is None if loading failed
+                input_image = None  # Ensure input_image is None if loading failed
 
         else:
-            # If no file is uploaded, ensure states reflect that.
-            # (input_image is already None from initialization)
-            if 'uploader_key' not in st.session_state: st.session_state.uploader_key = 0 # Hack to help reset if needed
-            # Optional: Clear previous results when the file is removed by the user
-            # This requires a bit more state management or observing the uploader state.
-            # For simplicity now, we just show a message.
+            # If no file is uploaded, show a message
             st.info("Please upload an image to begin.")
-            # Clear previous output if desired when no file is present
-            # st.session_state.output_image = None
-            # st.session_state.status_text = "Please upload an image."
-
+            # Option to clear previous results when file is removed (can be complex to detect removal vs. initial state)
+            # A simple approach is to clear output if input_image_display is None AFTER a file was potentially there.
+            # For now, relying on user uploading a new file to trigger processing.
+            # st.session_state.output_image = None # Uncomment if you want output cleared when no file is present
 
     with col2:
         st.header("Output")
 
-        # --- Display Output (Remains in col2) ---
-        # Always check session state here for what to display
+        # --- Display Output ---
         if st.session_state.output_image:
-            st.image(st.session_state.output_image, caption="Processed Image", use_column_width=True)
+            st.image(
+                st.session_state.output_image,
+                caption="Processed Image",
+                use_container_width=True,
+            )
             try:
                 buf = io.BytesIO()
                 # Handle potential RGBA images from processing, save as PNG
                 img_to_save = st.session_state.output_image
-                if img_to_save.mode == 'RGBA':
-                     output_format = 'PNG'
-                     # Optional: Convert to RGB if PNG transparency is not desired
-                     # img_to_save = img_to_save.convert('RGB')
-                     # output_format = 'JPEG' # Or keep PNG
+                output_format = "PNG"  # Default to PNG for broader compatibility (handles transparency)
+                mime_type = "image/png"
+
+                # Try to infer original format if not RGBA, but default to PNG is safer
+                # Use PNG if alpha channel exists, otherwise try original or fallback to JPEG/PNG
+                if img_to_save.mode == "RGBA":
+                    output_format = "PNG"
+                    mime_type = "image/png"
                 else:
-                    output_format = img_to_save.format or 'PNG'
+                    # If original format known and not GIF (PIL save issues sometimes) use it, else PNG
+                    # uploaded_file might be None if app reloads, so safer to stick to PNG/JPEG
+                    # input_format = input_image.format if input_image else 'PNG'
+                    # if input_format and input_format.upper() in ['JPEG', 'JPG']:
+                    #     output_format = 'JPEG'
+                    #     mime_type = 'image/jpeg'
+                    #     img_to_save = img_to_save.convert('RGB') # Ensure RGB for JPEG
+                    # else:
+                    output_format = "PNG"  # Safer default
+                    mime_type = "image/png"
 
                 img_to_save.save(buf, format=output_format)
                 byte_im = buf.getvalue()
+
                 st.download_button(
                     label=f"⬇️ Download Processed Image ({output_format})",
                     data=byte_im,
                     file_name=f"processed_image.{output_format.lower()}",
-                    mime=f"image/{output_format.lower()}"
+                    mime=mime_type,
                 )
             except Exception as e:
                 st.warning(f"Could not create download button: {e}")
-        elif st.session_state.input_image_display: # If no output yet, but input exists
-             st.info("Processed image will appear here after style transfer.")
 
+        elif st.session_state.input_image_display:  # If no output yet, but input exists
+            st.info("🖼️ Processed image will appear here after style transfer.")
+        else:
+            st.info("🖼️ Upload an image and click 'Start Style Transfer'.")
 
         # Display status message (updated by actions in col1)
-        st.text_area("Status Information", value=st.session_state.status_text, height=100, disabled=True, key="status_area")
-
+        # Use a key to prevent widget duplication errors if logic reruns
+        st.text_area(
+            "Status Information",
+            value=st.session_state.status_text,
+            height=100,
+            disabled=True,
+            key="status_info_area",
+        )
 
 # --- Placeholder Tabs ---
 with tab2:
-    st.header("Video Style Transfer")
-    st.info("This feature is not yet implemented.")
+    st.header("🎬 Video Style Transfer")
+    st.info("This feature is under development.")
 
 with tab3:
-    st.header("Real-ESRGAN Upscaling (Testing)")
-    st.info("This feature is not yet implemented.")
+    st.header("🔍 Real-ESRGAN Upscaling (Standalone)")
+    st.info("This feature is under development.")
 
-# To run: streamlit run your_script_name.py
+# To run: streamlit run main.py (or your script name)

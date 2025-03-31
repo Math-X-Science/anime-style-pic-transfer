@@ -3,8 +3,6 @@ from converter._path_parser import PathParser
 
 def main():
     parser = PathParser()
-    print(parser.ffmpeg)
-    print(parser.ffprobe)
     print(parser.model_path)
     print(parser.realesr_excu)
     print(parser.realesr_model)

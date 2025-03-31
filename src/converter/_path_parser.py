@@ -14,11 +14,8 @@ class PathParser:
         "workspace.toml", WorkspaceSetting
     )
 
-    ffmpeg: Path = Path(converter_settings.ffmpeg)
-    ffprobe: Path = Path(converter_settings.ffprobe)
     model_path: Path = Path(converter_settings.model)
     realesr_excu: Path = Path(converter_settings.realesr_excu)
-    realesr_model: Path = Path(converter_settings.realesr_model)
 
     workspace: Path = Path(workspace_settings.root)
 
@@ -30,3 +27,13 @@ class PathParser:
     upscale_image: Path = workspace / workspace_settings.upscale_image
     input_video: Path = workspace / workspace_settings.input_video
     output_video: Path = workspace / workspace_settings.output_video
+
+    def __init__(self):
+        if not self.workspace.exists():
+            self.workspace.mkdir(parents=True)
+        if not self.model_path.exists():
+            raise FileNotFoundError(f"model path not found at {self.model_path}")
+        if not self.realesr_excu.exists():
+            raise FileNotFoundError(
+                f"realesr executable not found at {self.realesr_excu}"
+            )
