@@ -4,29 +4,27 @@ import streamlit as st
 from PIL import Image
 
 # --- Assuming these imports work and contain the necessary definitions ---
-try:
-    # Assuming converter is installed or in PYTHONPATH
-    from converter._path_parser import PathParser
-    from converter._typing import ModelName, Resolution, Scale
-    from converter.api import (
-        animegan_picture_transfer,  # Keep save_image if needed elsewhere, but it's called internally now
-    )
+# Assuming converter is installed or in PYTHONPATH
+from converter._path_parser import PathParser
+from converter._typing import ModelName, Resolution, Scale
+from converter.api import (
+    animegan_picture_transfer,  # Keep save_image if needed elsewhere, but it's called internally now
+)
+from converter._dataclss import ConverterSetting
+from converter.utils.config import load_settings_file
+# Initialize PathParser (ensure paths are valid in the execution environment)
+path_parser = PathParser()
 
-    # Initialize PathParser (ensure paths are valid in the execution environment)
-    path_parser = PathParser()
+# Get choices (handle potential errors if typing is complex)
+# model_choice = list(ModelName.__args__) # type: ignore # This isn't used in the UI yet
 
-    # Get choices (handle potential errors if typing is complex)
-    # model_choice = list(ModelName.__args__) # type: ignore # This isn't used in the UI yet
-except ImportError as e:
-    st.error(f"Failed to import necessary modules from 'converter': {e}")
-    st.stop()  # Stop execution if core components are missing
-except Exception as e:
-    st.error(f"Error during initial setup: {e}")
-    st.stop()
+converter_settings: ConverterSetting = load_settings_file("converter.toml", ConverterSetting)
+
 
 # --- Streamlit App ---
-st.set_page_config(layout="wide")
-st.title("🖼️ Image Style Transfer and Tools")
+if not converter_settings.as_package:
+    st.set_page_config(layout="wide")
+    st.title("🖼️ Image Style Transfer and Tools")
 
 # --- Session State Initialization ---
 if "output_image" not in st.session_state:

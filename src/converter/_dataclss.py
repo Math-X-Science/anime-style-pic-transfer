@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class ConverterSetting(BaseModel):
+    as_package: Annotated[bool, Field(default=False)]
     ffmpeg: Annotated[str, Field(default="ffmpeg")]
     ffprobe: Annotated[str, Field(default="ffprobe")]
     fps: Annotated[int, Field(default=24)]
