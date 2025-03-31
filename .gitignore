@@ -8,3 +8,5 @@ tmp.py
 realesrgan/
 .venv/
 *.7z
+models/
+*.zip
