@@ -1,3 +1,4 @@
+as_package = false
 ffmpeg = "ffmpeg"
 ffprobe = "ffprobe"
 fps = 24

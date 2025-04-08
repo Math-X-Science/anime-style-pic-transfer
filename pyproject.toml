@@ -7,8 +7,7 @@ requires-python = ">=3.11,<3.12"
 dependencies = [
     "easydict==1.8",
     "moviepy==1.0.2",
-    "onnxruntime==1.20.0 ; sys_platform != 'win32'",     # Install CPU on non-Windows
-    "onnxruntime-gpu==1.20.0 ; sys_platform == 'win32'", # Install GPU on Windows
+    "onnxruntime==1.20.0",     # Install CPU on non-Windows
     "opencv-python==4.11.0.86",
     "socksio==1.0.0",
     "tqdm>=4.43.0",
